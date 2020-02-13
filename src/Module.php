@@ -2,10 +2,10 @@
 /**
  * Module.php - Module Class
  *
- * Module Class File for Articlerequest_Matching Module
+ * Module Class File for Articlerequest Matching Module
  *
  * @category Config
- * @package Articlerequest_Matching
+ * @package Articlerequest\Matching
  * @author Verein onePlace
  * @copyright (C) 2020  Verein onePlace <admin@1plc.ch>
  * @license https://opensource.org/licenses/BSD-3-Clause
@@ -13,7 +13,7 @@
  * @since 1.0.0
  */
 
-namespace OnePlace\Articlerequest_Matching;
+namespace OnePlace\Articlerequest\Matching;
 
 use Laminas\Db\Adapter\AdapterInterface;
 use Laminas\Db\ResultSet\ResultSet;
@@ -41,82 +41,5 @@ class Module {
      */
     public function getConfig() : array {
         return include __DIR__ . '/../config/module.config.php';
-    }
-
-    /**
-     * Load Models
-     */
-    public function getServiceConfig() : array {
-        return [
-            'factories' => [
-                # Articlerequest_Matching Module - Base Model
-                Model\Articlerequest_MatchingTable::class => function($container) {
-                    $tableGateway = $container->get(Model\Articlerequest_MatchingTableGateway::class);
-                    return new Model\Articlerequest_MatchingTable($tableGateway,$container);
-                },
-                Model\Articlerequest_MatchingTableGateway::class => function ($container) {
-                    $dbAdapter = $container->get(AdapterInterface::class);
-                    $resultSetPrototype = new ResultSet();
-                    $resultSetPrototype->setArrayObjectPrototype(new Model\Articlerequest_Matching($dbAdapter));
-                    return new TableGateway('articlerequest_Matching', $dbAdapter, null, $resultSetPrototype);
-                },
-            ],
-        ];
-    }
-
-    /**
-     * Load Controllers
-     */
-    public function getControllerConfig() : array {
-        return [
-            'factories' => [
-                # Articlerequest_Matching Main Controller
-                Controller\Articlerequest_MatchingController::class => function($container) {
-                    $oDbAdapter = $container->get(AdapterInterface::class);
-                    $tableGateway = $container->get(Model\Articlerequest_MatchingTable::class);
-                    return new Controller\Articlerequest_MatchingController(
-                        $oDbAdapter,
-                        $container->get(Model\Articlerequest_MatchingTable::class),
-                        $container
-                    );
-                },
-                # Api Plugin
-                Controller\ApiController::class => function($container) {
-                    $oDbAdapter = $container->get(AdapterInterface::class);
-                    return new Controller\ApiController(
-                        $oDbAdapter,
-                        $container->get(Model\Articlerequest_MatchingTable::class),
-                        $container
-                    );
-                },
-                # Export Plugin
-                Controller\ExportController::class => function($container) {
-                    $oDbAdapter = $container->get(AdapterInterface::class);
-                    return new Controller\ExportController(
-                        $oDbAdapter,
-                        $container->get(Model\Articlerequest_MatchingTable::class),
-                        $container
-                    );
-                },
-                # Search Plugin
-                Controller\SearchController::class => function($container) {
-                    $oDbAdapter = $container->get(AdapterInterface::class);
-                    return new Controller\SearchController(
-                        $oDbAdapter,
-                        $container->get(Model\Articlerequest_MatchingTable::class),
-                        $container
-                    );
-                },
-                # Installer
-                Controller\InstallController::class => function($container) {
-                    $oDbAdapter = $container->get(AdapterInterface::class);
-                    return new Controller\InstallController(
-                        $oDbAdapter,
-                        $container->get(Model\Articlerequest_MatchingTable::class),
-                        $container
-                    );
-                },
-            ],
-        ];
     }
 }
