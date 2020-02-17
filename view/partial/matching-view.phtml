@@ -2,155 +2,159 @@
 # Get Matching Results from Controller
 use Application\Controller\CoreController;
 
-$aMatchingResults = $this->aPartialData['aMatchingResults'];
-$aMatchingResultViewCriterias = $this->aPartialData['aViewCriterias'];
+if(array_key_exists('matching_data',$this->aPartialData)) {
+
+    $aMatchingResults = $this->aPartialData['matching_data']['aMatchingResults'];
+    $aMatchingResultViewCriterias = $this->aPartialData['matching_data']['aViewCriterias'];
 
 # Get linked Article
-$iLinkedArticle = $this->oItem->getTextField('article_idfs');
+    $iLinkedArticle = $this->oItem->getTextField('article_idfs');
 
 # Only show matching if we are not already linked
-if($iLinkedArticle == 0) {
-    if(count($aMatchingResults) == 0) {
-    ?>
-        <div class="alert alert-info"><?=$this->translate('No Articles matching yet')?></div>
-    <?php } ?>
-    <ul class="list-group">
-        <?php
-        foreach ($aMatchingResults as $oArticle) {
+    if ($iLinkedArticle == 0) {
+        if (count($aMatchingResults) == 0) {
             ?>
-            <li class="list-group-item">
-                <?= $this->translate('Article') . ': <b>' . $oArticle->getLabel() . '</b>' ?>
-                &nbsp;<a href="<?= $this->url('article', ['action' => 'view', 'id' => $oArticle->getID()]) ?>"
-                         title="<?= $this->translate('View article') ?>">
-                    <i class="fas fa-external-link-square-alt"></i>
-                </a>
-                <div>
-                    Matched by <?=$oArticle->sMatchedBy?>
-                </div>
-                <?php
-                var_dump($aMatchingResultViewCriterias);
-                # Loop over all matching criterias which could be shown
-                foreach (array_keys($aMatchingResultViewCriterias) as $sCriteria) {
-                    $aCriteriaInfo = $aMatchingResultViewCriterias[$sCriteria];
+            <div class="alert alert-info"><?= $this->translate('No Articles matching yet') ?></div>
+        <?php } ?>
+        <ul class="list-group">
+            <?php
+            foreach ($aMatchingResults as $oArticle) {
+                ?>
+                <li class="list-group-item">
+                    <?= $this->translate('Article') . ': <b>' . $oArticle->getLabel() . '</b>' ?>
+                    &nbsp;<a href="<?= $this->url('article', ['action' => 'view', 'id' => $oArticle->getID()]) ?>"
+                             title="<?= $this->translate('View article') ?>">
+                        <i class="fas fa-external-link-square-alt"></i>
+                    </a>
+                    <div>
+                        Matched by <?= $oArticle->sMatchedBy ?>
+                    </div>
+                    <?php
+                    //var_dump($aMatchingResultViewCriterias);
+                    # Loop over all matching criterias which could be shown
+                    foreach (array_keys($aMatchingResultViewCriterias) as $sCriteria) {
+                        $aCriteriaInfo = $aMatchingResultViewCriterias[$sCriteria];
 
-                    # type based output
-                    switch ($aCriteriaInfo['type']) {
-                        case 'multiselect':
-                            $aCategories = $oArticle->getMultiSelectField($sCriteria);
-                            # only show value if article really has it
-                            if (count($aCategories) > 0) {
-                                echo '<br/>';
-                                echo '<small>';
-                                echo $this->translate($aCriteriaInfo['label']) . ': ';
-                                foreach ($oArticle->getMultiSelectField($sCriteria, true) as $oCt) {
-                                    echo $oCt->getLabel() . ',';
+                        # type based output
+                        switch ($aCriteriaInfo['type']) {
+                            case 'multiselect':
+                                $aCategories = $oArticle->getMultiSelectField($sCriteria);
+                                # only show value if article really has it
+                                if (count($aCategories) > 0) {
+                                    echo '<br/>';
+                                    echo '<small>';
+                                    echo $this->translate($aCriteriaInfo['label']) . ': ';
+                                    foreach ($oArticle->getMultiSelectField($sCriteria, true) as $oCt) {
+                                        echo $oCt->getLabel() . ',';
+                                    }
+                                    echo '</small>';
                                 }
-                                echo '</small>';
-                            }
-                            break;
-                        case 'select':
-                            $iSelectFieldID = $oArticle->getSelectFieldID($sCriteria);
-                            # only show value if article really has it
-                            if ($iSelectFieldID != 0) {
-                                echo '<br/>';
-                                echo '<small>';
-                                echo $this->translate($aCriteriaInfo['label']) . ': ';
-                                $oSelectFieldValue = $oArticle->getSelectField($sCriteria);
-                                echo $oSelectFieldValue->getLabel() . ',';
-                                echo '</small>';
-                            }
-                            break;
-                        case 'text':
-                            if ($oArticle->getTextField($sCriteria)) {
-                                $sVal = $oArticle->getTextField($sCriteria);
-                                echo '<div class="row"><div class="col-md-3">';
-                                echo '<small>' . $this->translate($aCriteriaInfo['label']) . ': ';
-                                echo $sVal;
-                                echo '</small></div>';
-                                # optional notice and visual comparison for result
-                                if ($aCriteriaInfo['compare_notice']) {
-                                    # Compare textfield between Article and Articlerequest
-                                    if ($sVal != $this->oItem->getTextField($aCriteriaInfo['articlerequest_field'])) {
-                                        if ($this->oItem->getTextField($aCriteriaInfo['articlerequest_field']) != '') {
-                                            echo '<div class="col-md-3">';
-                                            echo '<small class="alert alert-info">';
-                                            echo $this->translate($aCriteriaInfo['label']) . ' ' . $this->translate('looking for') . ':';
-                                            echo '&nbsp;<b>' . $this->oItem->getTextField($aCriteriaInfo['articlerequest_field']) . '</b>';
-                                            echo '</small>';
+                                break;
+                            case 'select':
+                                $iSelectFieldID = $oArticle->getSelectFieldID($sCriteria);
+                                # only show value if article really has it
+                                if ($iSelectFieldID != 0) {
+                                    echo '<br/>';
+                                    echo '<small>';
+                                    echo $this->translate($aCriteriaInfo['label']) . ': ';
+                                    $oSelectFieldValue = $oArticle->getSelectField($sCriteria);
+                                    echo $oSelectFieldValue->getLabel() . ',';
+                                    echo '</small>';
+                                }
+                                break;
+                            case 'text':
+                                if ($oArticle->getTextField($sCriteria)) {
+                                    $sVal = $oArticle->getTextField($sCriteria);
+                                    echo '<div class="row"><div class="col-md-3">';
+                                    echo '<small>' . $this->translate($aCriteriaInfo['label']) . ': ';
+                                    echo $sVal;
+                                    echo '</small></div>';
+                                    # optional notice and visual comparison for result
+                                    if ($aCriteriaInfo['compare_notice']) {
+                                        # Compare textfield between Article and Articlerequest
+                                        if ($sVal != $this->oItem->getTextField($aCriteriaInfo['articlerequest_field'])) {
+                                            if ($this->oItem->getTextField($aCriteriaInfo['articlerequest_field']) != '') {
+                                                echo '<div class="col-md-3">';
+                                                echo '<small class="alert alert-info">';
+                                                echo $this->translate($aCriteriaInfo['label']) . ' ' . $this->translate('looking for') . ':';
+                                                echo '&nbsp;<b>' . $this->oItem->getTextField($aCriteriaInfo['articlerequest_field']) . '</b>';
+                                                echo '</small>';
+                                                echo '</div>';
+                                            }
+                                        } else {
+                                            echo '<div class="col-md-3"><i class="fas fa-check text-success"></i>';
+                                            echo ' <small>' . $this->translate($aCriteriaInfo['label']) . ' ' . $this->translate('exact match') . '!</small>';
                                             echo '</div>';
                                         }
-                                    } else {
-                                        echo '<div class="col-md-3"><i class="fas fa-check text-success"></i>';
-                                        echo ' <small>' . $this->translate($aCriteriaInfo['label']) . ' ' . $this->translate('exact match') . '!</small>';
-                                        echo '</div>';
                                     }
+                                    echo '</div>';
                                 }
-                                echo '</div>';
-                            }
-                            break;
-                        case 'currency':
-                            if ($oArticle->getTextField($sCriteria)) {
-                                echo '<div class="row"><div class="col-md-3"><b>' . $this->translate($aCriteriaInfo['label']) . ': ';
-                                echo '€ ' . number_format($oArticle->getTextField($sCriteria), 2, '.', '\'');
-                                echo '</b></div>';
-                                if ($aCriteriaInfo['compare_notice']) {
-                                    if ($oArticle->getTextField($sCriteria) > $this->oItem->getTextField($aCriteriaInfo['articlerequest_field'])) {
-                                        echo '<div class="col-md-3"><b class="alert alert-danger">';
-                                        echo '<b>€ ' . number_format($oArticle->getTextField($sCriteria) - $this->oItem->getTextField($aCriteriaInfo['articlerequest_field']), 2, '.', '\'');
-                                        echo '</b>&nbsp;' . $this->translate('over') . ' ' . $this->translate($aCriteriaInfo['label']) . '</b></div>';
-                                    } else {
-                                        echo '<div class="col-md-3"><b class="alert alert-success"> ';
-                                        echo $this->translate($aCriteriaInfo['label']) . ' is matching</b></div>';
+                                break;
+                            case 'currency':
+                                if ($oArticle->getTextField($sCriteria)) {
+                                    echo '<div class="row"><div class="col-md-3"><b>' . $this->translate($aCriteriaInfo['label']) . ': ';
+                                    echo '€ ' . number_format($oArticle->getTextField($sCriteria), 2, '.', '\'');
+                                    echo '</b></div>';
+                                    if ($aCriteriaInfo['compare_notice']) {
+                                        if ($oArticle->getTextField($sCriteria) > $this->oItem->getTextField($aCriteriaInfo['articlerequest_field'])) {
+                                            echo '<div class="col-md-3"><b class="alert alert-danger">';
+                                            echo '<b>€ ' . number_format($oArticle->getTextField($sCriteria) - $this->oItem->getTextField($aCriteriaInfo['articlerequest_field']), 2, '.', '\'');
+                                            echo '</b>&nbsp;' . $this->translate('over') . ' ' . $this->translate($aCriteriaInfo['label']) . '</b></div>';
+                                        } else {
+                                            echo '<div class="col-md-3"><b class="alert alert-success"> ';
+                                            echo $this->translate($aCriteriaInfo['label']) . ' is matching</b></div>';
+                                        }
                                     }
-                                }
-                                echo '</div>';
+                                    echo '</div>';
 
-                            }
-                            break;
-                        default:
-                            break;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
                     }
-                }
-                ?>
-                <a class="btn btn-primary"
-                   href="/articlerequest/success/<?= $this->oItem->getID() ?>-<?= $oArticle->getID() ?>">
-                    <?= $this->translate('Choose Article & Close Request') ?>
-                </a>
-            </li>
-        <?php } ?>
-    </ul>
-    <?php
-} else {
-    $oArticleTbl = false;
-    try {
-        $oArticleTbl = CoreController::$oServiceManager->get(\OnePlace\Article\Model\ArticleTable::class);
-    } catch(\RuntimeException $e) {
-        ?>
-        <div class="alert alert-warning">
-            <?=$this->translate('could not load article table')?>
-        </div>
+                    ?>
+                    <a class="btn btn-primary"
+                       href="<?=$this->url('articlerequest-matching-success',['id'=>$this->oItem->getID().'-'.$oArticle->getID()])?>">
+                        <?= $this->translate('Choose Article & Close Request') ?>
+                    </a>
+                </li>
+            <?php } ?>
+        </ul>
         <?php
-    }
-
-    $oArticle = false;
-    if($oArticleTbl) {
+    } else {
+        $oArticleTbl = false;
         try {
-            $oArticle = $oArticleTbl->getSingle($iLinkedArticle);
-        } catch(\RuntimeException $e) {
+            $oArticleTbl = CoreController::$oServiceManager->get(\OnePlace\Article\Model\ArticleTable::class);
+        } catch (\RuntimeException $e) {
             ?>
             <div class="alert alert-warning">
-                <?=$this->translate('could not find linked article')?>
+                <?= $this->translate('could not load article table') ?>
             </div>
             <?php
         }
-    }
 
-    if($oArticle) { ?>
-        <h3><?=$this->translate('Matching was successful')?></h3>
-        <p><?=$this->translate('Linked Article')?>: <a href="<?=$this->url('article',['action'=>'view','id'=>$oArticle->getID()])?>" title="<?=$this->translate('View Article')?>">
-                <?=$oArticle->getLabel()?>
-            </a></p>
-    <?php
-    }
+        $oArticle = false;
+        if ($oArticleTbl) {
+            try {
+                $oArticle = $oArticleTbl->getSingle($iLinkedArticle);
+            } catch (\RuntimeException $e) {
+                ?>
+                <div class="alert alert-warning">
+                    <?= $this->translate('could not find linked article') ?>
+                </div>
+                <?php
+            }
+        }
 
+        if ($oArticle) { ?>
+            <h3><?= $this->translate('Matching was successful') ?></h3>
+            <p><?= $this->translate('Linked Article') ?>: <a
+                        href="<?= $this->url('article', ['action' => 'view', 'id' => $oArticle->getID()]) ?>"
+                        title="<?= $this->translate('View Article') ?>">
+                    <?= $oArticle->getLabel() ?>
+                </a></p>
+            <?php
+        }
+    }
 }

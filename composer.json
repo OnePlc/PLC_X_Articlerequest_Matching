@@ -19,7 +19,7 @@
   },
   "require": {
     "php": "^7.1",
-    "oneplace/oneplace-contact": "^1.0.6"
+    "oneplace/oneplace-articlerequest": "^1.0.0"
   },
   "autoload": {
     "psr-4": {

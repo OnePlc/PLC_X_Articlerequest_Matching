@@ -20,6 +20,35 @@ use Laminas\Router\Http\Segment;
 use Laminas\ServiceManager\Factory\InvokableFactory;
 
 return [
+    # Skeleton Module - Routes
+    'router' => [
+        'routes' => [
+            'articlerequest-matching-setup' => [
+                'type'    => Literal::class,
+                'options' => [
+                    'route'    => '/articlerequest/matching/setup',
+                    'defaults' => [
+                        'controller' => Controller\InstallController::class,
+                        'action'     => 'checkdb',
+                    ],
+                ],
+            ],
+            'articlerequest-matching-success' => [
+                'type'    => Segment::class,
+                'options' => [
+                    'route' => '/articlerequest/matching/success[/:id]',
+                    'constraints' => [
+                        'id'     => '[0-9_-]+',
+                    ],
+                    'defaults' => [
+                        'controller' => Controller\MatchingController::class,
+                        'action'     => 'success',
+                    ],
+                ],
+            ],
+        ],
+    ],
+
     # View Settings
     'view_manager' => [
         'template_path_stack' => [
