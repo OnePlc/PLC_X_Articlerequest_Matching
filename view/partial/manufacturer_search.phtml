@@ -1,0 +1,29 @@
+<?php
+
+use Application\Controller\CoreController;
+
+?>
+<select id="plcQuickSearchManufacturer" class="form-control" style="min-width:250px;"></select>
+
+<script>
+    $('#plcQuickSearchManufacturer').select2({
+        ajax: {
+            url: '/tag/api/list/article-single/manufacturer',
+            dataType: 'json'
+        },
+        placeholder: 'Maschinenhersteller'
+    });
+
+    $('#plcQuickSearchManufacturer').on('select2:select',function(e) {
+        var sRawLink = e.params.data.view_link;
+        var iResultID = e.params.data.id;
+
+        var sFinalLink = '/article/ajaxsearch';
+        window.location = '/article/search/ajaxsearch?tag=manufacturer_idfs&tag_val='+iResultID;
+        /**
+        var sFinalLink = sRawLink.replace('##ID##',iResultID);
+
+        window.location = sFinalLink;
+         **/
+    });
+</script>

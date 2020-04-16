@@ -55,7 +55,6 @@ class MatchingController extends CoreEntityController {
     }
 
     public function attachMatchingForm($oItem = false) {
-
         $aPartialData = [
             'aMatchingResults'=>$this->getMatchingResults($oItem),
             'aViewCriterias' =>$this->getMatchingCriterias(),
@@ -143,7 +142,7 @@ class MatchingController extends CoreEntityController {
         $aMatchedArticles = [];
         $aFieldMatchingSkipList = ['state_idfs'=>true];
 
-        $aCriterias = $this->getMatchingCriterias();
+        $aCriterias = MatchingController::getMatchingCriterias();
 
         $oFieldsDB = CoreEntityController::$aCoreTables['core-form-field']->select(['form'=>'articlerequest-single']);
         # Match Articles by selected field values of request
@@ -179,11 +178,11 @@ class MatchingController extends CoreEntityController {
                             //echo 'go multimatch single';
                             foreach($oFieldReq->oValues as $oVal) {
                                 $iVal = $oVal->Entitytag_ID;
-                                $aSingleMatches = $this->matchByAttribute($oField->fieldkey,'single',$oArticleRequest,$iVal);
+                                $aSingleMatches = MatchingController::matchByAttribute($oField->fieldkey,'single',$oArticleRequest,$iVal);
                                 $aMatchedArticles = array_merge($aMatchedArticles,$aSingleMatches);
                             }
                         } else {
-                            $aSingleMatches = $this->matchByAttribute($oField->fieldkey,'single',$oArticleRequest);
+                            $aSingleMatches = MatchingController::matchByAttribute($oField->fieldkey,'single',$oArticleRequest);
                             $aMatchedArticles = array_merge($aMatchedArticles,$aSingleMatches);
                         }
                         if(count($aSingleMatches) > 0) {
@@ -197,7 +196,7 @@ class MatchingController extends CoreEntityController {
                         break;
                     case 'multiselect':
                         //echo 'match by '.$oField->fieldkey;
-                        $aMultiMatches = $this->matchByAttribute(str_replace(['ies'],['y'],$oField->fieldkey),'multi',$oArticleRequest);
+                        $aMultiMatches = MatchingController::matchByAttribute(str_replace(['ies'],['y'],$oField->fieldkey),'multi',$oArticleRequest);
                         $aMatchedArticles = array_merge($aMatchedArticles,$aMultiMatches);
                         //echo 'result: '.count($aMultiMatches);
                         if(count($aMultiMatches) > 0) {

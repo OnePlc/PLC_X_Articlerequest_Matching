@@ -31,3 +31,9 @@ INSERT INTO `core_entity_tag` (`Entitytag_ID`, `entity_form_idfs`, `tag_idfs`, `
 (NULL, 'article-single', '2', 'sold', '0', '1', '2020-02-13 16:06:31', '1', '2020-02-13 16:06:31'),
 (NULL, 'articlerequest-single', '2', 'open', '0', '1', '2020-02-13 19:40:52', '1', '2020-02-13 19:40:52'),
 (NULL, 'articlerequest-single', '2', 'success', '0', '1', '2020-02-13 19:40:52', '1', '2020-02-13 19:40:52');
+
+--
+-- Widget
+--
+INSERT INTO `core_widget` (`Widget_ID`, `widget_name`, `label`, `permission`) VALUES
+(NULL, 'articlerequest_matching', 'Matching Results', 'index-Application\\Controller\\IndexController');

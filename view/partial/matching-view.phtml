@@ -158,3 +158,10 @@ if(array_key_exists('matching_data',$this->aPartialData)) {
         }
     }
 }
+
+if(count($aMatchingResults) > 0) {
+?>
+<script>
+    $('.plc-button-panel').before('<div class="alert alert-warning py-2 px-2"><?=count($aMatchingResults)?> passende Maschinen !</div>');
+</script>
+<?php } ?>

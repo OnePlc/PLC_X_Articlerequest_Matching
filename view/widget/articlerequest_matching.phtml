@@ -1,6 +1,7 @@
 <?php
 use Application\Controller\CoreController;
 use OnePlace\Articlerequest\Model\ArticlerequestTable;
+use OnePlace\Articlerequest\Matching\Controller\MatchingController;
 
 try {
     # Load Article Requests from Database
@@ -15,7 +16,7 @@ try {
     if(count($oReqsOpen) > 0) {
         foreach($oReqsOpen as $oReq) {
             # check if we got open matchings
-            if(count($oReq->getMatchingResults()) > 0) {
+            if(count(MatchingController::getMatchingResults($oReq)) > 0) {
                 $aMatched[] = $oReq;
             }
             $iOpenCount++;
@@ -37,7 +38,7 @@ try {
                         </div>
                     </div>
                 </div>
-                <h5 class="card-title mb-0"><?=$this->translate('Article Request')?> - <?=$this->translate('Matchings')?></h5>
+                <h5 class="card-title mb-0"><?=$this->translate('Articlerequests')?> - <?=$this->translate('Matchings')?></h5>
             </div>
             <div class="card-body h-100">
                 <?php $sClass = (count($aMatched) > 0) ? 'warning' : 'dark'; ?>

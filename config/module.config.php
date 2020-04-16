@@ -55,4 +55,16 @@ return [
             'articlerequest_matching' => __DIR__ . '/../view',
         ],
     ],
+
+    # Translator
+    'translator' => [
+        'locale' => 'de_DE',
+        'translation_file_patterns' => [
+            [
+                'type'     => 'gettext',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern'  => '%s.mo',
+            ],
+        ],
+    ],
 ];
